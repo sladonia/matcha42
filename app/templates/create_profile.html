@@ -1,0 +1,96 @@
+{% extends 'base_reg.html' %}
+
+{% block content %}
+    <div class="container create_profile_container">
+
+        {% with massages = get_flashed_messages(with_categories=true) %}
+            {% if massages %}
+                <div class="well login_well">
+                    {% for category, massage in massages %}
+                        <p class="ma-b-0 text-center {{ category }}">{{ massage }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+
+        <div class="well login_well">
+            <form id="create_profile_form" class="form-horizontal" action="#/" method="post">
+                <div class="form-group">
+                    <h4 style="text-align: center">Let the world know about you!</h4>
+                </div>
+
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="gender" class="control-label col-sm-2 pa-r-0">Gender:</label>
+                    <div class="col-sm-10">
+                        {{ form.gender(class="form-control", required=True) }}
+                        {% for error in form.gender.errors %}
+                            <div class="alert-warning">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="sexual_pref" class="control-label col-sm-2 pa-r-0">Preferences:</label>
+                    <div class="col-sm-10">
+                        {{ form.preferences(class="form-control", required=True) }}
+                        {% for error in form.preferences.errors %}
+                            <div class="alert-warning">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="biography" class="control-label col-sm-2 pa-r-0">Biography:</label>
+                    <div class="col-sm-10">
+                        {{ form.biography(class="form-control", required=True, rows="4", placeholder="tell about yourself...") }}
+                        {% for error in form.biography.errors %}
+                            <div class="alert-warning">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="interests" class="control-label col-sm-2 pa-r-0">Interests:</label>
+                    <div class="col-sm-10">
+                        {{ form.interests(class="form-control", required=True, rows="2", placeholder="#sport, #alcohol?") }}
+                        {% for error in form.interests.errors %}
+                            <div class="alert-warning">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location" class="control-label col-sm-2 pa-r-0">Location:</label>
+                    <div class="col-sm-10">
+                        {{ form.city(class="form-control", required=True, rows="2", placeholder="where are you from?") }}
+                        {% for error in form.city.errors %}
+                            <div class="alert-warning">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10 ">
+                        <div class="text-left">
+                            {{ form.show_location() }}&nbsp;allow other users to see my location on the map
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="submit" class="control-label col-sm-2 pa-r-0"></label>
+                    <div class="col-sm-10">
+                        <input required type="submit" name="register" value="SUBMIT" class="form-control" id="submit">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+

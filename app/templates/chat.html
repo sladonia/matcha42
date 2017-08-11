@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/chat.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="my_content_container">
+
+        <div class="well ma-b-10">
+            <h5 class="mb-20">Your chat with {{ user.login }}</h5>
+            <hr>
+            <div id="chat_container">
+
+                {% for msg in chat %}
+
+
+                    <div class="msg_container row ma-l-1 ma-r-1 ma-b-10">
+                        <div class="col-sm-2 col-xs-3 display_inline text-center pa-5">
+                            <img class="img-circle" src="{{ get_user_by_id(g.this_user, user, msg['user_id']).sm_avatar_path }} " width="50"
+                                 height="50">
+                        </div>
+
+                        <div class="col-sm-10 col-xs-9 display_inline text-justify pa-5">
+                            <p class="text-color-2 ma-0">{{ msg['date_time'] }}</p>
+                            <p class="text-color-2 ma-0">{{ get_user_by_id(g.this_user, user, msg['user_id']).login }}</p>
+                            {{ msg['msg'] }}
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <div class="well">
+            <form id="chat_form" action="#/" method="post">
+                <div class="form-group">
+                    <textarea id='msg_body' autofocus rows="3" name="massage" class="form-control" form="chat_form"
+                              placeholder="enter a massage"></textarea>
+                </div>
+                <div>
+                    <input onclick="new_msg()" class="form-control" type="button" name="send_massage" value="SEND MASSAGE">
+                </div>
+            </form>
+        </div>
+
+
+        <div style="height: 29px"></div>
+        <div id="footer">
+            &copy; 2017 Serhii Ladonia All Rights Reserved
+        </div>
+        <a name="bottom"></a>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        window.scroll(0, document.documentElement.scrollHeight);
+    </script>
+    <script src="{{ url_for('static', filename='js/moment.js') }} "></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }} "></script>
+    <script>
+    other_user = {
+      id: {{ user.id }},
+      login: '{{ user.login }}',
+      sm_avatar_path: '{{ user.sm_avatar_path }}'
+    };
+
+    this_user = {
+      id: {{ g.this_user.id }},
+      login: '{{ g.this_user.login }}',
+      sm_avatar_path: '{{ g.this_user.sm_avatar_path }}'
+    };
+
+    </script>
+{% endblock %}

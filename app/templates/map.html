@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+
+    <style>
+        #map {
+            width: 100%;
+            height: 500px;
+            border: 1px solid lightgray;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="my_content_container">
+
+
+        <div id="map_well" class="well">
+
+            <div class="ma-b-20">
+                <h5>
+                    MATCHA USERS
+                </h5>
+            </div>
+
+            <div id="map">
+            </div>
+
+        </div>
+
+        <div style="height: 29px"></div>
+        <div id="footer">
+            &copy; 2017 Serhii Ladonia All Rights Reserved
+        </div>
+        <a name="bottom"></a>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+
+    <script type="text/javascript">
+
+        set_map_height();
+        $(window).resize(set_map_height);
+
+        function set_map_height() {
+            $('#map').css('height', ($('#page-content-wrapper').height() - 150) + 'px');
+        }
+
+        function initMap() {
+            var loc = {{ locations|tojson }};
+
+            var myLatLng = {
+                lat: {{ g.this_user.lat }},
+                lng: {{ g.this_user.lon }}
+            };
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 9,
+                center: myLatLng
+            });
+
+            var my_marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title: "It's YOU;)",
+                icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+            });
+
+            for (var i = 0; i < loc.length; i++) {
+                var marker = new google.maps.Marker({
+                    position: loc[i],
+                    map: map,
+                    title: loc[i]['login']
+                });
+            }
+        }
+
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZT0TlzQjAb6FBY7aIDBwegGZkPo36ccg&callback=initMap"></script>
+
+{% endblock %}

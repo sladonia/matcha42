@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/cabinet.css') }}">
+{% endblock %}
+{% block content %}
+    <div class="my_content_container">
+        <div class="well">
+            <div class="mb-20 clearfix">
+                <div class="float-right">
+                    <a id="report_fake_account" class="underline" href="/settings/profile">Edit profile</a>
+                </div>
+            </div>
+            <div class="row">
+                <div id="big_photo_div" class="margin_bottom_20 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                    <div id="photo"
+                         style="background: url('{{ g.av_path }}') no-repeat">
+                    </div>
+                </div>
+                <div id="description_div" class="margin_bottom_20 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                    <div class="desc_field">{{ user_data['login'] }}
+                        ({{ user_data['first_name'] }} {{ user_data['last_name'] }})
+                    </div>
+                    <div class="desc_field">{{ user_data['preferences'] }} {{ user_data['gender_name'] }}, {{ user_data['age'] }}
+                        years old
+                    </div>
+                    <div class="desc_field">Sexuality: {{ user_data['sexuality'] }}</div>
+                    <div class="desc_field">From: {{ user_data['city'] }}</div>
+                    <div class="desc_field">Interests: {{ user_data['interests'] }}</div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="margin_bottom_20 col-sm-6" style="text-align: center">
+                    <button data-toggle="collapse" data-target="#biography" type="button" class="btn btn-primary">
+                        About me
+                    </button>
+                </div>
+            </div>
+            <div id="biography" class="collapse">
+                <p>{{ user_data['biography'] }}</p>
+            </div>
+        </div>
+
+        <div id="my_photos_well" class="my_well well">
+            <div class="text-center">
+                <button id="show_photos_button" data-toggle="collapse" data-target="#my_photos_container"
+                        type="button"
+                        class="btn_width btn btn-primary">
+                    Show/Hide my photos
+                </button>
+
+
+            </div>
+
+            <div id="my_photos_container" class="collapse">
+                <div class="well_header">
+                    <button onclick="location.href='/settings/photo'" class="btn_width ma-b-20 ma-t-10 btn btn-primary">
+                        Edit photos
+                    </button>
+                </div>
+                <div class="row">
+                    {% if user_photos is not none %}
+                        {% for photo in user_photos %}
+                            <div class="margin_bottom_20 col-xs-12 col-sm-6 col-md-4">
+                                <a href="#/">
+                                    <div class="my_photo"
+                                         style='background: url(" {{ photo }} ") no-repeat'>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div id="connections_well" class="well">
+            <div class="text-center">
+                <button id="show_connections-button" data-toggle="collapse" data-target="#connections_container"
+                        type="button"
+                        class="btn_width btn btn-primary">
+                    Show/Hide connections
+                </button>
+            </div>
+            <div id="connections_container" class="collapse">
+
+                {% if connections_confirmed.__len__() != 0 %}
+
+                    <div class="well_header">
+                        <h5>Your connections</h5>
+                    </div>
+                    <div class="row">
+
+                        {% for user in connections_confirmed %}
+
+                            <a href="{{ user.homepage }}">
+                                <div class="margin_bottom_20 col-xs-4 col-sm-3 col-md-2">
+                                    <div class="connections_photos"
+                                         style='background: url(" {{ user.avatar_path }} ") no-repeat'>
+                                    </div>
+                                    <div class="connection_login">
+                                        {{ user.login }}
+                                    </div>
+
+                                </div>
+                            </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+                {% if connections_unconfirmed.__len__() != 0 %}
+
+                    <div class="well_header">
+                        <h5>They liked your account</h5>
+                    </div>
+                    <div class="row">
+
+                        {% for user in connections_unconfirmed %}
+
+                            <a href="{{ user.homepage }}">
+                                <div class="margin_bottom_20 col-xs-4 col-sm-3 col-md-2">
+                                    <div class="connections_photos"
+                                         style='background: url(" {{ user.avatar_path }} ") no-repeat'>
+                                    </div>
+                                    <div class="connection_login">
+                                        {{ user.login }}
+                                    </div>
+
+                                </div>
+                            </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+                {% if connections_requested.__len__() != 0 %}
+
+                    <div class="well_header">
+                        <h5>You liked their accounts</h5>
+                    </div>
+                    <div class="row">
+
+                        {% for user in connections_requested %}
+
+                            <a href="{{ user.homepage }}">
+                                <div class="margin_bottom_20 col-xs-4 col-sm-3 col-md-2">
+                                    <div class="connections_photos"
+                                         style='background: url(" {{ user.avatar_path }} ") no-repeat'>
+                                    </div>
+                                    <div class="connection_login">
+                                        {{ user.login }}
+                                    </div>
+
+                                </div>
+                            </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+        <div id="visit_history_well" class="well">
+            <div class="text-center">
+                <button data-toggle="collapse" data-target="#visit_history_container" type="button"
+                        class="btn_width btn btn-primary">
+                    Show/Hide history
+                </button>
+            </div>
+
+            <div id="visit_history_container" class="collapse">
+
+                <h5>Visit history</h5>
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Date/time</th>
+                            <th>History</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for item in visit_history %}
+
+                            <tr>
+                                <td> {{ item['date_str'] }} </td>
+                                <td>User <a
+                                        href="{{ item['url'] }}"> {{ item['other_user_login'] }} </a> {{ item['msg'] }}
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="height: 29px">
+        </div>
+        <div id="footer">
+            &copy; 2017 Serhii Ladonia All Rights Reserved
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script src=" {{ url_for('static', filename='js/cabinet.js') }} "></script>
+{% endblock %}

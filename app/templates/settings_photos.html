@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="my_content_container">
+
+        {% with massages = get_flashed_messages(with_categories=true) %}
+            {% if massages %}
+                <div class="well">
+                    {% for category, massage in massages %}
+                        <p class="ma-b-0 text-center {{ category }}">{{ massage }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="well">
+            <ul class="ma-b-30 nav nav-pills nav-justified">
+                <li><a class="but_border" href="/settings/notification">Notifications</a></li>
+                <li><a class="but_border" href="/settings/profile">Edit profile</a></li>
+                <li class="active"><a class="but_border" href="#/">Edit photos</a></li>
+            </ul>
+            <div>
+
+
+                <div class="mb-40 row">
+                    <div id="photo_prev_div" class="text-center col-xs-12 col-sm-6">
+                        <div id="photo" avatar_id="{{ grep_img_funct(avatar_path) }}"
+                             style="background: url('{{ avatar_path }} ')">
+                        </div>
+                    </div>
+                    <div id="photo_buttons" class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <form class="ma" style="max-width: 300px" action="#/" method="get">
+                                <input type="button" name="upload_photo" value="UPLOAD PHOTOS (MAX 5)"
+                                       class="form-control"
+                                       id="upload_photo">
+                                <input class="form-control" name="upload_input" type="file" id="upload_input" multiple>
+                            </form>
+
+                        </div>
+                        <div class="form-group">
+                            <form class="ma" style="max-width: 300px" action="#/" method="get">
+
+                                <input type="button" disabled name="finish_registration" id="finish_registration"
+                                       value="SAVE CHANGES"
+                                       class="form-control"
+                                       id="finish_registration">
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div id="preview_container" class="pa-t-20 container-fluid form-group">
+                    <h5 class="mb-40" style="text-align: center">PHOTO PREVIEWS</h5>
+                    <div class="row" id="photos_container">
+
+                        {% for photo_path in photos %}
+
+                            <div id="div_0" class="ma-r-0 ma-l-0 ma-t-0 ma-b-20 col-xs-12 col-sm-6 col-md-4"
+                                 my_id={{ grep_img_funct(photo_path) }}>
+                                <div class="position_relative my_photo" my_id={{ grep_img_funct(photo_path) }}
+                                        style="background: url(
+                                '{{ photo_path }}') no-repeat;" onclick='place_server_avatar(event)'>
+                            </div>
+                            <i class="del_photo_icon photo_btn_div fa fa-times fa-lg"
+                               onclick="delete_server_image(event)"></i>
+                            </div>
+
+                        {% endfor %}
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div style="height: 29px"></div>
+    <div id="footer">
+        &copy; 2017 Serhii Ladonia All Rights Reserved
+    </div>
+    <a name="bottom"></a>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+        var my_files = [];
+        var photos = {};
+        var avatar_photo_id;
+        var fr;
+        var photo_limit = 5;
+        var global_id = 0;
+        var avatar_set = false;
+
+        var photos_from_server;
+        var photos_to_del = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            photos_from_server = document.getElementsByClassName('my_photo');
+            if (photos_from_server.length > 0)
+                avatar_set = true;
+            for (var i = 0; i < photos_from_server.length; i++) {
+                photo_limit--;
+                if (global_id < photos_from_server[i].getAttribute('my_id')) {
+                    global_id = photos_from_server[i].getAttribute('my_id');
+                }
+            }
+            global_id++;
+            avatar_photo_id = document.getElementById('photo').getAttribute('avatar_id');
+        }, false);
+
+        function delete_server_image(event) {
+            activate_save_btn();
+            i_el = event.target;
+            parent_div = i_el.parentElement;
+            id_to_remove = parent_div.getAttribute('my_id');
+            delete photos_from_server[id_to_remove];
+            parent_div.remove();
+            photo_limit++;
+            photos_to_del.push(id_to_remove);
+            if (id_to_remove === avatar_photo_id) {
+                var avatar_div = document.getElementById('photo');
+                if (photos_from_server.length > 0) {
+                    avatar_div.style.background = photos_from_server[0].style.background;
+                    avatar_photo_id = photos_from_server[0].getAttribute('my_id');
+                } else if (Object.keys(photos).length > 0) {
+                    var key = Object.keys(photos)[0];
+                    avatar_div.style.background = "url(" + photos[key] + ") no-repeat";
+                    avatar_photo_id = key;
+                } else {
+                    avatar_div.style.background = "url('/static/photos/default_profile.png') no-repeat";
+                    avatar_set = false;
+                    avatar_photo_id = null;
+                }
+            }
+        }
+
+        function place_server_avatar(event) {
+            activate_save_btn();
+            div_el = event.target;
+            my_id = div_el.getAttribute('my_id');
+            avatar = document.getElementById('photo');
+            avatar.style.background = div_el.style.background;
+            avatar_photo_id = my_id;
+        }
+
+        function activate_save_btn() {
+            var finish_button = document.getElementById("finish_registration");
+            finish_button.removeAttribute('disabled');
+        }
+
+        $("#upload_photo").click(function () {
+            input_element = $("#upload_input");
+            input_element.trigger("click");
+        });
+
+        $("#upload_input").change(function () {
+            my_files = document.getElementById("upload_input").files;
+            photos_container = document.getElementById('photos_container');
+            max_len = my_files.length <= photo_limit ? my_files.length : photo_limit;
+            for (var i = 0; i < max_len; i++) {
+                if (my_files[i].type.match("image.*")) {
+                    fr = new FileReader();
+                    fr['id'] = i;
+                    fr.onload = createImage;
+                    fr.readAsDataURL(my_files[i]);
+                    photo_limit--;
+                }
+            }
+        });
+
+        function createImage() {
+            activate_save_btn();
+            img = document.createElement('img');
+            img.src = this.result;
+            photos[global_id] = this.result;
+            i_element = document.createElement('i');
+            i_element.classList.add('del_photo_icon', 'photo_btn_div', 'fa', 'fa-times', 'fa-lg');
+            i_element.addEventListener('click', delete_image);
+            current_div = document.createElement('DIV');
+            current_div.setAttribute('id', 'div_' + global_id);
+            current_div.classList.add('mb-20', 'ma-r-0', 'ma-l-0', 'ma-t-0', 'col-xs-12', 'col-sm-6', 'col-md-4');
+            current_div.setAttribute('my_id', String(global_id));
+            inner_div = document.createElement('DIV');
+            inner_div.classList.add('position_relative', 'my_photo');
+            inner_div.style.background = "url(" + img.src + ") no-repeat";
+            inner_div.addEventListener('click', place_avatar);
+            inner_div.setAttribute('my_id', String(global_id));
+            current_div.appendChild(inner_div);
+            current_div.appendChild(i_element);
+            photos_container.appendChild(current_div);
+            global_id++;
+            if (!avatar_set) {
+                console.log('breakpoint. avatar not set');
+                inner_div.click();
+                avatar_set = true;
+                finish_button = document.getElementById("finish_registration");
+                finish_button.removeAttribute('disabled');
+
+            }
+        }
+
+        function place_avatar(event) {
+            activate_save_btn();
+            div_el = event.target;
+            my_id = div_el.getAttribute('my_id');
+            avatar = document.getElementById('photo');
+            avatar.style.background = "url(" + photos[my_id] + ") no-repeat";
+            console.log('breakpoint. place avatar')
+            avatar_photo_id = my_id;
+        }
+
+        function delete_image(event) {
+            activate_save_btn();
+            i_el = event.target;
+            parent_div = i_el.parentElement;
+            id_to_remove = parent_div.getAttribute('my_id');
+            delete photos[id_to_remove];
+            parent_div.remove();
+            photo_limit++;
+            if (id_to_remove === avatar_photo_id) {
+                var avatar_div = document.getElementById('photo');
+                if (Object.keys(photos).length > 0) {
+                    var key = Object.keys(photos)[0];
+                    avatar_div.style.background = "url(" + photos[key] + ") no-repeat";
+                    avatar_photo_id = key;
+                } else {
+                    avatar_div.style.background = "url('/static/photos/default_profile.png') no-repeat";
+                    avatar_set = false;
+                    finish_button = document.getElementById("finish_registration");
+                    finish_button.setAttribute('disabled', true);
+                    avatar_photo_id = null;
+                }
+            }
+        }
+
+        $("#finish_registration").click(function () {
+            photos['avatar_photo_id'] = avatar_photo_id;
+            photos['photos_to_del'] = photos_to_del;
+            serialized_photos = JSON.stringify(photos)
+            $.ajax({
+                type: "POST",
+                url: "/settings/photo",
+                data: serialized_photos,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if (data['response'] === 'OK')
+                        window.location.href = '/settings/photo';
+                },
+                failure: function () {
+                    console.log('kill em all!');
+                }
+            });
+        });
+    </script>
+{% endblock %}

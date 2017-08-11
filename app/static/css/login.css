@@ -1,0 +1,219 @@
+@font-face {
+    font-family: "Rainbow_Bridge";
+    src: url("/static/fonts/Rainbow_Bridge.ttf")
+}
+
+html {
+    max-width: 100%;
+}
+
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+    min-height: 100%;
+    overflow-y: visible;
+    width: 100%;
+    position: absolute;
+    height: auto
+}
+
+.jumbotron {;
+    margin: 0;
+    border-radius: 0 !important;
+    margin-bottom: 0;
+    text-align: center;
+    color: white;
+    background: url('/static/carousel_img/vintage_2.jpg') no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.login_container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.create_profile_container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.add_photo_container {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.login_well {
+    overflow: hidden;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.horizontal_bar {
+    height: 5px;
+}
+
+.upper_bar {
+    background-color: #E84855;
+}
+
+.pa-r-0 {
+    padding-right: 0;
+}
+
+.pa-t-20 {
+    padding-top: 20px;
+}
+
+.ma-b-0 {
+    margin-bottom: 0;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.mb-40 {
+    margin-bottom: 40px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.ma {
+    margin: auto;
+}
+
+.sub_bar_1 {
+    background-color: #E84855;
+    height: 100%;
+}
+
+.sub_bar_2 {
+    background-color: #2E6DA4;
+    height: 100%;
+}
+
+.jumbotron p {
+    display: none;
+}
+
+.jumbotron h1 {
+    font-family: Rainbow_Bridge;
+}
+
+.del_photo_icon {
+    cursor: pointer;
+}
+
+.del_photo_icon:hover {
+    color: #E84855;
+}
+
+#upload_input {
+    width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+#jumbotron_container {
+    margin: 0;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+#footer {
+    z-index: 10500;
+    background-color: #9AADBF;
+    position: absolute;
+    padding: 12px;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
+    text-transform: uppercase;
+    color: white;
+}
+
+#big_logo {
+    color: #E84855;
+    font-family: Rainbow_Bridge;
+    text-align: center;
+}
+
+.my_photo {
+    height: 200px;
+    width: 100%;
+    background-size: cover !important;
+    background-position: center !important;
+    cursor: pointer;
+}
+
+.my_photo:hover {
+    box-shadow: 0 0 3px 1px grey;
+}
+
+#photo {
+    display: inline-block;
+    width: 100%;
+    max-width: 250px;
+    height: 300px;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+#preview_container {
+    border: 1px solid grey;
+    border-radius: 10px;
+}
+
+.position_relative {
+    position: relative;
+}
+
+.photo_btn_div {
+    float: right;
+    padding: 5px;
+}
+
+.photo_btn {
+    float: right;
+}
+
+#preview_container a {
+    color: darkgrey;
+}
+
+#preview_container a:hover {
+    color: #E84855;
+}
+
+@media (min-width: 768px) {
+    .jumbotron p {
+        display: inherit;
+    }
+
+    .jumbotron {
+        text-align: inherit;
+    }
+
+    #jumbotron_container {
+        margin: auto;
+        padding-right: inherit;
+        padding-left: inherit;
+    }
+
+    #lower_bar {
+        margin-bottom: 40px;
+    }
+}

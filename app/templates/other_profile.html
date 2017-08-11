@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/cabinet.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="my_content_container">
+        <div class="well">
+            <div class="mb-20 clearfix">
+                <div class="text-left float-left">{{ user.online_status }}</div>
+                <div class="float-right">
+
+                    {% if user.connection_status == 3 %}
+
+                        <a class="underline" href="{{ url_for('routes.chat_view', login=user.login) }}">Chat
+                            with {{ user.login }}</a>&nbsp;&nbsp;
+
+                    {% endif %}
+
+                    <a id="report_fake_account" class="underline" href="#/">Report fake account</a>
+                </div>
+            </div>
+            <div class="row">
+                <div id="big_photo_div" class="margin_bottom_20 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+
+                    <div id="photo"
+                         style='background: url(" {{ user.avatar_path }} ") no-repeat'>
+                    </div>
+                    <div>
+
+                        <form id='connection_form' method="post"
+                              action="{{ url_for('routes.other_profile_view', login=user.login) }}">
+                            {% if not connected %}
+
+                                <button name="submit" value='1' style="width: 250px" id="btn_like"
+                                        title="{% if g.permission != 3 %} {{ 'You need to add photo to like someone' }} {% else %} {{ 'Send like' }} {% endif %}"
+                                        {% if g.permission != 3 %} {{ 'disabled' }}  {% endif %}class="btn btn-primary">
+                                    <i class="fa fa-heart fa-2x"
+                                       aria-hidden="true"></i>
+                                </button>
+
+                            {% else %}
+
+                                <button name="submit" value='0' style="width: 250px" id="btn_like"
+                                        title="Brake connection" class="btn btn-primary"><i
+                                        class="fa fa-chain-broken fa-2x"
+                                        aria-hidden="true"></i>
+                                </button>
+
+                            {% endif %}
+                            <br>
+
+                            {% if user.is_blocked %}
+
+                                <button name="submit" value='3' style="width: 250px" id="btn_block"
+                                        title="Brake connection" class="ma-t-5 btn btn-success"><i
+                                        class="fa fa-recycle fa-2x"
+                                        aria-hidden="true"></i>
+                                </button>
+
+                            {% else %}
+                                <button name="submit" value='2' style="width: 250px" id="btn_block"
+                                        title="Brake connection" class="ma-t-5 btn btn-warning"><i
+                                        class="fa fa-ban fa-2x"
+                                        aria-hidden="true"></i>
+                                </button>
+                            {% endif %}
+
+                        </form>
+
+                    </div>
+
+
+                </div>
+                <div id="description_div" class="margin_bottom_20 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                    <div class="desc_field">{{ user.login }} ({{ user.first_name }} {{ user.last_name }})</div>
+                    <div class="desc_field">{{ user.preferences }} {{ user.man_or_woman }}, {{ user.age }} years old
+                    </div>
+                    <div class="desc_field">Sexuality: {{ user.sexuality }}</div>
+                    <div class="desc_field">From: {{ user.city }}</div>
+                    <div class="desc_field">Interests: {{ user.interests_str }}</div>
+                    <div class="desc_field">Connection status: <span
+                            class="text-primary">{{ user.connection_status_str }}</span></div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="margin_bottom_20 col-sm-6" style="text-align: center">
+                    <button data-toggle="collapse" data-target="#biography" type="button" class="btn btn-primary">
+                        Show/Hide biography
+                    </button>
+                </div>
+            </div>
+            <div id="biography" class="collapse in">
+                <p>{{ user.biography }}</p>
+            </div>
+        </div>
+
+        <div id="my_photos_well" class="my_well well">
+            <button id="show_photos_button" data-toggle="collapse" data-target="#my_photos_container"
+                    type="button"
+                    class="btn btn-primary">
+                Show/Hide photos
+            </button>
+            <div id="my_photos_container" class="collapse">
+                <div class="well_header">
+                    <h5>Photo gallery</h5>
+                </div>
+                <div class="row">
+
+                    {% for photo in user.photos_paths %}
+
+                        <div class="margin_bottom_20 col-xs-12 col-sm-6 col-md-4">
+                            <a href="#/">
+                                <div class="my_photo"
+                                     style='background: url(" {{ photo }} ") no-repeat'>
+                                </div>
+                            </a>
+                        </div>
+
+                    {% endfor %}
+
+
+                </div>
+            </div>
+        </div>
+        <div style="height: 29px">
+        </div>
+        <div id="footer">
+            &copy; 2017 Serhii Ladonia All Rights Reserved
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+    <script>
+        $(function () {
+            $(window).resize(resize_like_btn);
+            resize_like_btn();
+
+            function resize_like_btn() {
+                $('#btn_like').css('width', $('#photo').css('width'));
+            }
+        });
+    </script>
+    <script>
+        $('#report_fake_account').click(function () {
+                var conf = confirm('Are you sure that this is a fake account?');
+                fake = {
+                    fake: {{ user.id }},
+                    reported: {{ g.this_user.id }}
+                };
+                if (conf == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/report_fake",
+                        data: JSON.stringify(fake),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data['response'] === 'OK')
+                                console.log('OK from server');
+                            else
+                                console.log('KO from server')
+                        },
+                        failure: function () {
+                            console.log('failed from server');
+                        }
+                    });
+                    alert('You have reported fake account');
+                }
+            }
+        );
+    </script>
+{% endblock %}

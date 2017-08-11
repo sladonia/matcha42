@@ -1,0 +1,172 @@
+{% extends 'base_reg.html' %}
+
+{% block content %}
+    <div class="container add_photo_container">
+        <div class="well login_well">
+            <div class="form-group">
+                <h5 class="mb-40" style="text-align: center">Show yourself to the world!</h5>
+            </div>
+            <div class="mb-40 row">
+                <div id="photo_prev_div" class="ma-b-20 text-center col-xs-12 col-sm-6">
+                    <div id="photo"
+                         style="background: url('{{ url_for('static', filename='photos/default_profile.png') }} ')">
+                    </div>
+                </div>
+                <div id="photo_buttons" class="col-xs-12 col-sm-6">
+                    <div class="form-group">
+                        <form class="ma" style="max-width: 300px">
+                            <input type="button" name="upload_photo" value="UPLOAD PHOTOS (MAX 5)" class="form-control"
+                                   id="upload_photo">
+                            <input class="form-control" name="upload_input" type="file" id="upload_input" multiple>
+                        </form>
+
+                    </div>
+                    <div class="form-group">
+                        <form class="ma" style="max-width: 300px">
+                            <input type="button" disabled name="finish_registration" id="finish_registration"
+                                   value="FINISH REGISTRATION"
+                                   class="form-control"
+                                   id="finish_registration">
+                        </form>
+
+                    </div>
+
+                    <div class="form-group">
+                        <form class="ma" style="max-width: 300px">
+                            <input type="button" name="skip_photo" value="SKIP THIS STEP"
+                                   class="form-control"
+                                   id="skip_photo">
+                        </form>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="preview_container" class="pa-t-20 container-fluid form-group">
+                <h5 class="mb-40" style="text-align: center">PHOTO PREVIEWS</h5>
+                <div class="row" id="photos_container">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+        var my_files = [];
+        var photos = {};
+        var avatar_photo_id;
+        var fr;
+        var photo_limit = 5;
+        var global_id = 0;
+        var avatar_set = false;
+
+        $("#upload_photo").click(function () {
+            input_element = $("#upload_input");
+            input_element.trigger("click");
+        });
+
+        $("#upload_input").change(function () {
+            my_files = document.getElementById("upload_input").files;
+            photos_container = document.getElementById('photos_container');
+            max_len = my_files.length <= photo_limit ? my_files.length : photo_limit;
+            for (var i = 0; i < max_len; i++) {
+                if (my_files[i].type.match("image.*")) {
+                    fr = new FileReader();
+                    fr['id'] = i;
+                    fr.onload = createImage;
+                    fr.readAsDataURL(my_files[i]);
+                    photo_limit--;
+                }
+            }
+        });
+
+        function createImage() {
+            img = document.createElement('img');
+            img.src = this.result;
+            photos[global_id] = this.result;
+            i_element = document.createElement('i');
+            i_element.classList.add('del_photo_icon', 'photo_btn_div', 'fa', 'fa-times', 'fa-lg');
+            i_element.addEventListener('click', delete_image);
+            current_div = document.createElement('DIV');
+            current_div.setAttribute('id', 'div_' + global_id);
+            current_div.classList.add('mb-20', 'col-xs-12', 'col-sm-6', 'col-md-4');
+            current_div.setAttribute('my_id', String(global_id));
+            inner_div = document.createElement('DIV');
+            inner_div.classList.add('position_relative', 'my_photo');
+            inner_div.style.background = "url(" + img.src + ") no-repeat";
+            inner_div.addEventListener('click', place_avatar);
+            inner_div.setAttribute('my_id', String(global_id));
+            current_div.appendChild(inner_div);
+            current_div.appendChild(i_element);
+            photos_container.appendChild(current_div);
+            global_id++;
+            if (!avatar_set) {
+                inner_div.click();
+                avatar_set = true;
+                finish_button = document.getElementById("finish_registration");
+                finish_button.removeAttribute('disabled');
+
+            }
+        }
+
+        function place_avatar(event) {
+            div_el = event.target;
+            my_id = div_el.getAttribute('my_id');
+            avatar = document.getElementById('photo');
+            avatar.style.background = "url(" + photos[my_id] + ") no-repeat";
+            avatar_photo_id = my_id;
+        }
+
+        function delete_image(event) {
+            i_el = event.target;
+            parent_div = i_el.parentElement;
+            id_to_remove = parent_div.getAttribute('my_id');
+            delete photos[id_to_remove];
+            parent_div.remove();
+            photo_limit++;
+            if (id_to_remove === avatar_photo_id) {
+                if (Object.keys(photos).length > 0) {
+                    var key = Object.keys(photos)[0];
+                    avatar.style.background = "url(" + photos[key] + ") no-repeat";
+                    avatar_photo_id = key;
+                } else {
+                    avatar.style.background = "url('/static/photos/default_profile.png') no-repeat";
+                    avatar_set = false;
+                    finish_button = document.getElementById("finish_registration");
+                    finish_button.setAttribute('disabled', true);
+                    avatar_photo_id = null;
+                }
+            }
+        }
+
+        $("#finish_registration").click(function () {
+            photos['avatar_photo_id'] = avatar_photo_id;
+            serialized_photos = JSON.stringify(photos)
+
+            $.ajax({
+                type: "POST",
+                url: "/add_photo",
+                data: serialized_photos,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if (data['response'] === 'OK')
+                        window.location.href = '/cabinet';
+                },
+                failure: function () {
+                    console.log('kill em all!');
+                }
+            });
+        });
+
+
+        $("#skip_photo").click(function () {
+            window.location.href = '/cabinet';
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/geolocation.js') }} "></script>
+{% endblock %}

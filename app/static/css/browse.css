@@ -1,0 +1,23 @@
+.photo_browse {
+    margin: auto;
+    height: 150px;
+    width: 100%;
+    max-width: 110px;
+    background-position: center !important;
+    background-size: cover !important;
+}
+
+.info_box {
+    height: 100%;
+    min-height: 150px;
+}
+
+.container_photo_browse {
+    margin-bottom: 20px;
+}
+
+@media (min-width: 505px) {
+    .container_photo_browse {
+        margin-bottom: 0;
+    }
+}

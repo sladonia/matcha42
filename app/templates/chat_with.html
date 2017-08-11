@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+        <div class="my_content_container">
+
+            <div class="well">
+                <h5 class="mb-20">Chat with</h5>
+
+                <div class="chat_with_outer_box">
+
+                    {% for user in connections %}
+
+                    <a href="{{ url_for('routes.chat_view', login=user.login) }}">
+                        <div class="text-left container_radial chat_with">
+                            <img class="ma-10 img-circle" src=" {{ user.sm_avatar_path }}"
+                                 width="50"
+                                 height="50">
+                            <div class="vertical_align_middle display_inline pa-10">
+                                {{ user.login }} ({{ user.first_name }} {{ user.last_name }})<br>
+                                {{ user.online_status }}<br>
+                                Unread massages: {{ user.unread_msgs }}
+                            </div>
+                        </div>
+                    </a>
+
+                    {% endfor %}
+
+                </div>
+            </div>
+
+            <div style="height: 29px"></div>
+            <div id="footer">
+                &copy; 2017 Serhii Ladonia All Rights Reserved
+            </div>
+        </div>
+{% endblock %}

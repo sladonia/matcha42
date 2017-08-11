@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Matcha</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {% block styles %}
+    {% endblock %}
+
+</head>
+<body>
+<div id="lower_bar" class="horizontal_bar mb-20">
+    <div class="sub_bar_1 col-sm-4 col-xs-4"></div>
+    <div class="sub_bar_2 col-sm-8 col-xs-8"></div>
+</div>
+
+<div class="container" style="border-radius: 0;">
+    <h1 id="big_logo">The Matcha</h1>
+</div>
+
+{% block content %}
+{% endblock %}
+
+<div style="height: 60px">
+</div>
+<div id="footer">
+    &copy; 2017 Serhii Ladonia All Rights Reserved
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }} "></script>
+
+{% block scripts %}
+{% endblock %}
+
+</body>
+</html>

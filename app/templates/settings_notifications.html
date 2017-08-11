@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="my_content_container">
+
+        {% with massages = get_flashed_messages(with_categories=true) %}
+            {% if massages %}
+                <div class="well">
+                    {% for category, massage in massages %}
+                        <p class="ma-b-0 text-center {{ category }}">{{ massage }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="well text-left">
+            <ul class="ma-b-30 nav nav-pills nav-justified">
+                <li class="active"><a class="but_border" href="#/">Notifications</a></li>
+                <li><a class="but_border" href="/settings/profile">Edit profile</a></li>
+                <li><a class="but_border" href="/settings/photo">Edit photos</a></li>
+            </ul>
+            <div>
+                <p>Notify me when:</p>
+                <form method="post" action="#/">
+
+                    <div class="checkbox">
+                        <label>{{ form.likes_me() }}someone likes me</label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>{{ form.likes_me_back() }}someone likes me back</label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>{{ form.viewed_my_profile() }}someone viewed my
+                            profile</label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>{{ form.incoming_massage() }}incoming massage</label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>{{ form.unlikes_me() }}someone unlikes me</label>
+                    </div>
+
+                    <input class="form-control" type="submit" name="submit" value="UPDATE SETTINGS">
+
+                </form>
+            </div>
+
+        </div>
+
+        <div style="height: 29px"></div>
+        <div id="footer">
+            &copy; 2017 Serhii Ladonia All Rights Reserved
+        </div>
+        <a name="bottom"></a>
+    </div>
+{% endblock %}

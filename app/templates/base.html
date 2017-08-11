@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Matcha</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/general.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    {% block styles %}
+    {% endblock %}
+
+</head>
+<body>
+
+<nav id="nav_up" class="navbar navbar-default navbar-fixed-top">
+    <div id="navbar-logo" class="navbar-brand left_btn">Matcha</div>
+    <div id="navbar-logo_cover" class="navbar-brand left_btn"></div>
+    <div class="btn_wrapper left_btn">
+        <a id="menu_btn" href="#/" class="upper_btn btn"><i class="fa fa-bars fa-lg" aria-hidden="true"></i>
+        </a>
+    </div>
+
+
+    <div class="btn_wrapper right_btn">
+        <a href="/logout" class="up_btn_col upper_btn btn"><i class="fa fa-power-off fa-lg" aria-hidden="true"></i>
+        </a>
+    </div>
+
+    <div class="btn_wrapper right_btn">
+        <a id="notif_btn" style="position: relative" href="#/" class="up_btn_col upper_btn btn"><i
+                class="fa fa-bell fa-lg"
+                aria-hidden="true"></i>
+            <span id="notification_badge" class="badge"></span>
+        </a>
+    </div>
+
+
+    <div id="avatar_container" class="btn_wrapper right_btn">
+        <a href="{{ url_for('routes.cabinet_view') }}">
+            <img id="avatar" src="{{ g.sm_av_path }}" class="img-circle"
+                 alt="sladonia" width="40" height="40">
+        </a>
+
+    </div>
+</nav>
+
+
+<div id="wrapper">
+    <div id="notification_box">
+        <div class="display_inline ma-l-5">Notifications</div>
+    </div>
+
+
+    <div id="sidebar-wrapper">
+        <div id="list_div" class="list-group">
+            <a href="/cabinet" class="list-group-item
+            {% if request.path=='/cabinet' %}
+                active
+            {% endif %} "><span style="white-space:nowrap"><i class="fa fa-user fa-lg"
+                                                              aria-hidden="true"></i>&nbsp;profile</span></a>
+
+            <a href="/connections" class="list-group-item
+            {% if request.path=='/connections' %}
+                active
+            {% endif %} "><span style="white-space:nowrap"><i class="fa fa-users fa-lg"
+                                                              aria-hidden="true"></i>&nbsp;connections</span></a>
+
+            <a href="/browse" class="list-group-item
+            {% if request.path=='/browse' %}
+                active
+            {% endif %}
+            "><span style="white-space:nowrap"><i
+                    class="fa fa-search fa-lg"
+                    aria-hidden="true"></i>&nbsp;browse</span></a>
+            <a href="/search" class="list-group-item
+            {% if request.path=='/search' %}
+                active
+            {% endif %}
+            ">
+                <span style="white-space:nowrap"><i
+                        class="fa fa-binoculars fa-lg"
+                        aria-hidden="true"></i>&nbsp;search</span></a>
+            <a href="/chat_with" class="list-group-item
+            {% if request.path=='/chat_with' or uri=='/chat' %}
+                active
+            {% endif %}
+            ">
+                <span style="white-space:nowrap">
+                    <i class="fa fa-comments fa-lg" aria-hidden="true"></i>&nbsp;chat
+                    <span id="comment_badge" class="badge"></span>
+                </span>
+            </a>
+            <a href="/map" class="list-group-item
+            {% if request.path=='/map' %}
+                active
+            {% endif %}
+            "><span style="white-space:nowrap"><i class="fa fa-map fa-lg" aria-hidden="true"></i>&nbsp;map</span></a>
+            <a href="/settings/notification" class="list-group-item
+            {% if request.path=='/settings/notification' or request.path=='/settings/profile' or request.path=='/settings/photo' %}
+                active
+            {% endif %}
+            "><span style="white-space:nowrap"><i
+                    class="fa fa-cog fa-lg"></i>&nbsp;settings</span></a>
+            <a href="/about" class="list-group-item
+            {% if request.path=='/about' %}
+                active
+            {% endif %}
+            "><span style="white-space:nowrap">&nbsp;<i
+                    class="fa fa-info fa-lg"></i>&nbsp;about</span></a>
+        </div>
+
+    </div>
+    <div id="page-content-wrapper">
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }} "></script>
+<script src="{{ url_for('static', filename='js/main.js') }} "></script>
+<script src="{{ url_for('static', filename='js/geolocation.js') }} "></script>
+
+
+// cabinet
+{% block scripts %}
+{% endblock %}
+</body>
+</html>

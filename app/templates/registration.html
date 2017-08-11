@@ -1,0 +1,94 @@
+{% extends 'base_reg.html' %}
+
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="container login_container">
+        <div class="well login_well">
+            <form class="login_form" action="#/" method="post">
+
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <h5 style="text-align: center">CREATE ACCOUNT</h5>
+                </div>
+                <div class="form-group">
+                    {{ form.login(class="form-control", placeholder="login", required=True) }}
+                    {% for error in form.login.errors %}
+                        <div class="alert-warning">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.email(class="form-control", placeholder="email", required=True) }}
+                    {% for error in form.email.errors %}
+                        <div class="alert-warning">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <div class='input-group date' id='datetimepicker1'>
+                        {{ form.birth_date(class="form-control", placeholder="date of birth", required=True) }}
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    {% for error in form.birth_date.errors %}
+                        <div class="alert-warning">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.first_name(class="form-control", placeholder="first name", required=True) }}
+                    {% for error in form.first_name.errors %}
+                        <div class="alert-warning">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.last_name(class="form-control", placeholder="last name", required=True) }}
+                    {% for error in form.last_name.errors %}
+                        <div class="alert-warning">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.passwd(class="form-control", placeholder="password", required=True) }}
+                    {% for error in form.passwd.errors %}
+                        <div class="alert-warning">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.passwd_repeat(class="form-control", placeholder="repeat password", required=True) }}
+                    {% for error in form.passwd_repeat.errors %}
+                        <div class="alert-warning">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group" style="padding-left: 10px">
+                    {{ form.acept(required=True) }}
+                    &nbsp;&nbsp;accept <a href="/user_agreament">terms and conditions</a>
+                    {% for error in form.acept.errors %}
+                        <div class="alert-warning">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <input required type="submit" name="register" value="REGISTER" class="form-control" id="submit">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/moment.js') }} "></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-datetimepicker.min.js') }} "></script>
+    <script type="text/javascript">
+        $(function () {
+            // Bootstrap DateTimePicker v4
+            $('#datetimepicker1').datetimepicker({
+                format: 'DD/MM/YYYY'
+            });
+        });
+    </script>
+{% endblock %}

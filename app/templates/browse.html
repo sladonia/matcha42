@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% import 'pagination.html' as macros %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/browse.css') }}">
+{% endblock %}
+
+
+{% block content %}
+    <div class="my_content_container">
+
+        <div class="well">
+            <h5 class="mb-20">The best matches</h5>
+
+            <form class="form-horizontal" action="#/" method="post">
+
+                {{ form.hidden_tag() }}
+
+
+                <div class="form-group">
+                    <label class="control-label col-sm-3">Order by:</label>
+                    <div class="col-sm-9">
+
+                        {{ form.order_by(class='form-control') }}
+                        {% for error in form.order_by.errors %}
+                            <div class="alert-warning">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="ma-b-10 container_radial">
+
+                    <div class="col-sm-3"></div>
+                    <label class="col-sm-9 text-center">Filters</label>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Distance {{ form.enable_distance(class='enabler', onclick='enable_funct(this)', other_id='distance') }} </label>
+                        <div class="col-sm-9">
+                            {{ form.distance(disabled=True, class='form-control to_enable', placeholder="less then") }}
+                            {% for error in form.distance.errors %}
+                                <div class="alert-warning">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Sexuality {{ form.enable_sexuality(class='enabler', onclick='enable_funct(this)', other_id='sexuality') }} </label>
+                        <div class="col-sm-9">
+                            {{ form.sexuality(disabled=True, class="form-control to_enable", placeholder="not less then") }}
+                            {% for error in form.sexuality.errors %}
+                                <div class="alert-warning">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Common
+                            interests {{ form.enable_interests(class='enabler', onclick='enable_funct(this)', other_id='common_interests') }} </label>
+                        <div class="col-sm-9">
+                            {{ form.common_interests(disabled=True, class="form-control to_enable", placeholder="#beer, #sex") }}
+                            {% for error in form.common_interests.errors %}
+                                <div class="alert-warning">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="control-label col-sm-3">
+                            <label>Age {{ form.enable_age(class='enabler', onclick='enable_funct(this)', other_id='age_from') }} </label>
+                        </div>
+                        <div class="col-sm-4 col-xs-6 text-left">
+                            {{ form.age_from(disabled=True, class="form-control to_enable", placeholder="from") }}
+                            {% for error in form.age_from.errors %}
+                                <div class="alert-warning">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-sm-5 col-xs-6 text-left">
+                            {{ form.age_to(disabled=True, class="form-control to_enable", placeholder="to") }}
+                            {% for error in form.age_from.errors %}
+                                <div class="alert-warning">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="control-label col-sm-3"></div>
+                    <div class="col-sm-12 text-left">
+                        <input name="submit" type="submit" value="REFRESH" class="form-control">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        {% for user in offers %}
+
+            {% if not user.is_blocked and user.connection_status != 1 and user.connection_status != 3  %}
+
+            <div class="well">
+                <div class="container_photo_browse vertical_align_middle my-sm-3">
+                    <div style="background: url(' {{ user.avatar_path }}') no-repeat"
+                         class="photo_browse">
+                    </div>
+                </div>
+                <div class="vertical_align_middle text-left my-sm-9">
+                    <div class="info_box container_radial">
+                        <a class="underline" href="{{ user.homepage }}">View profile</a><br>
+                        {{ user.login }} ({{ user.first_name }} {{ user.last_name }})<br>
+                        {{ user.preferences }} {{ user.man_or_woman }}, {{ user.age }} years old<br>
+                        from: {{ user.city }}<br>
+                        distance: {{ user.distance }} km<br>
+                        sexuality: {{ user.sexuality }}<br>
+                        interests: {{ user.interests_str }}<br>
+                    </div>
+                </div>
+            </div>
+
+            {% endif %}
+
+        {% endfor %}
+
+        {{ macros.render_pagination(pagination) }}
+
+        <div style="height: 29px"></div>
+        <div id="footer">
+            &copy; 2017 Serhii Ladonia All Rights Reserved
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+
+{% endblock %}
+

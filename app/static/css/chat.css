@@ -1,0 +1,6 @@
+
+.msg_container {
+    border: 1px solid darkgray;
+    border-radius: 15px;
+    overflow: visible;
+}

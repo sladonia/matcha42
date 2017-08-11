@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+<div id="jumbotron_container" class="container-fluid" style="border-radius: 0;">
+    <div class="horizontal_bar upper_bar"></div>
+    <div class="jumbotron">
+        <h1>The Matcha</h1>
+        <h5>Dating platform</h5>
+        <p>Our advanced matching algorithms will help you to find the one ;)</p>
+    </div>
+    <div id="lower_bar" class="horizontal_bar mb-20">
+        <div class="sub_bar_1 col-sm-4 col-xs-4"></div>
+        <div class="sub_bar_2 col-sm-8 col-xs-8"></div>
+    </div>
+
+</div>
+
+<div class="container login_container">
+
+    {% with massages = get_flashed_messages(with_categories=true) %}
+        {% if massages %}
+            <div class="well login_well">
+                {% for category, massage in massages %}
+                    <p class="ma-b-0 text-center {{ category }}">{{ massage }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+
+    <div class="well login_well">
+        <form class="login_form" action="#/" method="post" name="login">
+
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.login(class="form-control required", placeholder="login", required=True) }}
+                {% for error in form.login.errors %}
+                    <div class="alert-warning">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.passwd(class="form-control", placeholder="password", required=True) }}
+                {% for error in form.passwd.errors %}
+                    <div class="alert-warning">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <input type="submit" name="submit" value="LOG IN" class="form-control" id="submit">
+            </div>
+        </form>
+        <div class="clearfix">
+            <div class="float-left">
+                Forgot password?
+            </div>
+            <div class="float-right form-group">
+                <a href="/reset_passwd">reset</a>
+            </div>
+        </div>
+        <div>
+            <form action="/registration">
+                <input type="submit" name="submit" value="CREATE ACCOUNT" class="form-control" id="create_account">
+            </form>
+        </div>
+
+
+    </div>
+</div>
+
+<div style="height: 60px">
+</div>
+<div id="footer">
+    &copy; 2017 Serhii Ladonia All Rights Reserved
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }} "></script>
+
+</body>
+</html>

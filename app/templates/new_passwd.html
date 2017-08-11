@@ -1,0 +1,29 @@
+{% extends 'base_reg.html' %}
+
+{% block content %}
+    <div class="container login_container">
+        <div class="well login_well">
+            <form class="login_form" action="#/" method="post">
+
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <h5 style="text-align: center">Enter a new password</h5>
+                </div>
+
+                <div class="form-group">
+                    {{ form.passwd(class='form-control', placeholder='password') }}
+                    {% for error in form.passwd.errors %}
+                        <div class="alert-warning">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="">
+                    <input required type="submit" name="register" value="RESET PASSWORD" class="form-control"
+                           id="submit">
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
