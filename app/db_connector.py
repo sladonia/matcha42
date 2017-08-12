@@ -18,3 +18,4 @@ class Db(Connection):
         cursor = self.cursor()
         cursor.execute(sql)
         self.commit()
+        cursor.close()

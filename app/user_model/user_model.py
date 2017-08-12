@@ -71,6 +71,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, uid)
         result = cursor.fetchone()
+        cursor.close()
         if result is not None:
             return result['lat'], result['lon']
         return None, None
@@ -81,6 +82,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, uid)
         result = cursor.fetchone()
+        cursor.close()
         if result is not None:
             return result['login']
         return None
@@ -91,6 +93,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, login)
         result = cursor.fetchone()
+        cursor.close()
         if result is not None:
             return result['id']
         return None
@@ -110,14 +113,18 @@ class User:
         cursor.execute(sql, user_id)
         db.commit()
         User.update_geolocation(user_id, 50.0, 30.0)
+        cursor.close()
 
 
     @staticmethod
     def remove_user(login):
         sql = 'DELETE FROM users WHERE login=%s;'
-        db.cursor().execute(sql, (login,))
+        cursor = db.cursor()
+        cursor.execute(sql, (login,))
         db.commit()
         User.delete_user_folder(login)
+        cursor.close()
+        
 
     @staticmethod
     def verify_passwd(login, passwd):
@@ -125,6 +132,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (login,))
         result = cursor.fetchone()
+        cursor.close()
         if (result):
             hashed_passwd = result['passwd']
             return check_password_hash(hashed_passwd, passwd)
@@ -137,6 +145,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (login))
         result = cursor.fetchone()
+        cursor.close()
         if result['COUNT(*)'] == 0:
             return False
         else:
@@ -148,6 +157,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (email))
         result = cursor.fetchone()
+        cursor.close()
         if result['COUNT(*)'] == 0:
             return False
         else:
@@ -161,6 +171,7 @@ class User:
         result = cursor.fetchone()
         session['id'] = result['id']
         session['login'] = login
+        cursor.close()
 
     @staticmethod
     def log_out():
@@ -173,7 +184,9 @@ class User:
             sql = "SELECT * FROM users WHERE login=%s AND id=%s;"
             cursor = db.cursor()
             cursor.execute(sql, (session['login'], session['id']))
-            if cursor.fetchone() is not None:
+            result = cursor.fetchone()
+            cursor.close()
+            if result is not None:
                 return True
         return False
 
@@ -184,7 +197,7 @@ class User:
             cursor = db.cursor()
             cursor.execute(sql, (session['login'], session['id'],))
             activated = cursor.fetchone()['activated']
-#            print(activated)
+            cursor.close()
             return activated
         return 0
 
@@ -195,6 +208,7 @@ class User:
             cursor = db.cursor()
             cursor.execute(sql, login)
             activated = cursor.fetchone()
+            cursor.close()
             if activated['activated'] <= 1:
                 return True
             else:
@@ -208,6 +222,7 @@ class User:
         sql = "UPDATE users SET activated=%s WHERE login=%s;"
         cursor.execute(sql, (n, login))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def send_email(to, subject, msg):
@@ -242,6 +257,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (token, id))
         db.commit()
+        cursor.close()
         msg = 'Follow the link to reset password for {0}: \n{1}'
         msg = msg.format(login, url_for('routes.assign_new_passwd_view',
                                         login=login, token=token, _external=True))
@@ -255,6 +271,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, login)
         result = cursor.fetchone()
+        cursor.close()
         if result is None:
             return False
         if result['token'] == int(token):
@@ -275,6 +292,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, type)
         result = cursor.fetchone()
+        cursor.close()
         if result is None:
             return 0
         else:
@@ -286,6 +304,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, type)
         result = cursor.fetchone()
+        cursor.close()
         if result is None:
             return 0
         else:
@@ -302,6 +321,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, user_id)
         interests_list = [x['interest'] for x in cursor.fetchall()]
+        cursor.close()
         return interests_list
 
     @staticmethod
@@ -311,6 +331,7 @@ class User:
             sql = "INSERT INTO interests(user_id, interest) VALUES(%s, %s)"
             cursor.execute(sql, (user_id, interest))
             db.commit()
+        cursor.close()
 
     @staticmethod
     def create_profile(user_id, gender, preferences, biography, interests, city, show_location):
@@ -329,6 +350,7 @@ class User:
         cursor.execute(sql, (gender, preferences, biography, city, s_l, user_id))
         db.commit()
         User.interests_to_db(user_id, User.get_interests_from_user(interests))
+        cursor.close()
 
     @staticmethod
     def create_user_folder(username, user_id):
@@ -355,6 +377,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (user_id, key, img_static_path))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def add_photo_to_db(user_id, photo_id, path, avatar):
@@ -362,6 +385,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (user_id, photo_id, path, avatar))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def update_avatar_photo_to_db(user_id, photo_id, path, avatar):
@@ -371,6 +395,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (photo_id, path, user_id, avatar))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def get_photo_id_for_debug(uid):
@@ -378,6 +403,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, uid)
         result = cursor.fetchone()
+        cursor.close()
         if result is None:
             return None
         return result['photo_id']
@@ -389,6 +415,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (user_id, avatar_photo_id))
         result = cursor.fetchone()
+        cursor.close()
         if result is not None:
             avatar_static_origin = result['path']
         else:
@@ -419,6 +446,7 @@ class User:
 
         User.update_avatar_photo_to_db(user_id, 0, covered_sm_static_path, 2)
         User.update_avatar_photo_to_db(user_id, 0, covered_mid_static_path, 1)
+        cursor.close()
 
     @staticmethod
     def delete_photo(photo_id, user_id):
@@ -431,6 +459,7 @@ class User:
         sql = '''DELETE FROM photos WHERE user_id=%s AND photo_id=%s;'''
         cursor.execute(sql, (user_id, photo_id))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def get_avatar_path(user_id):
@@ -438,6 +467,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (user_id))
         resust = cursor.fetchone()
+        cursor.close()
         if resust is not None:
             return resust['path']
         return '/static/photos/default_profile.png'
@@ -448,6 +478,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, user_id)
         resust = cursor.fetchone()
+        cursor.close()
         if resust is not None:
             return resust['path']
         return '/static/photos/default_profile.png'
@@ -458,6 +489,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (user_id))
         resust = cursor.fetchone()
+        cursor.close()
         if resust is not None:
             return resust['path']
         return '/static/photos/default_profile.png'
@@ -468,6 +500,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (user_id))
         resust = cursor.fetchall()
+        cursor.close()
         if resust is not None:
             return [item['path'] for item in resust]
         return None
@@ -490,6 +523,7 @@ class User:
         result['interests'] = interests_str
         result['age'] = User.get_age(result['date_of_birth'])
         result['gender_name'] = User.get_man_or_woman(result['gender'])
+        cursor.close()
         return result
 
     @staticmethod
@@ -513,6 +547,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, user_id)
         result = cursor.fetchone()
+        cursor.close()
         return result['email']
 
     @staticmethod
@@ -528,6 +563,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (login, first_name, last_name, date1, gender, preferences, biography, city, show_location, user_id))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def update_passwd(user_id, passwd):
@@ -538,6 +574,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (hashed_passwd, user_id))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def send_update_email_rwquest(receiver, login, user_id):
@@ -551,6 +588,7 @@ class User:
         ip = socket.gethostbyname(socket.gethostname())
         msg += 'http://' + ip + ':5000' + url_for('routes.update_email_view', login=login)
         User.send_email(receiver, 'Matcha emil update', msg)
+        cursor.close()
 
 
     @staticmethod
@@ -560,6 +598,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (login))
         result = cursor.fetchone()['new_email']
+        cursor.close()
         if result is not None:
             return True
         return False
@@ -578,6 +617,7 @@ class User:
                   WHERE users.login=%s;'''
         cursor.execute(sql, (new_email, login, login))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def delete_interests(user_id):
@@ -585,6 +625,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, user_id)
         db.commit()
+        cursor.close()
 
     @staticmethod
     def update_interesrs(user_id, interests_str):
@@ -604,13 +645,16 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (likes_me, unlikes_me, likes_me_back, viewed_my_profile, incoming_massage, user_id))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def get_notification_settings(user_id):
         sql = "SELECT * FROM notification_settings WHERE user_id=%s;"
         cursor = db.cursor()
         cursor.execute(sql, user_id)
-        return cursor.fetchone()
+        result = cursor.fetchone()
+        cursor.close()
+        return result
 
     @staticmethod
     def grep_image_number(img_filename):
@@ -645,10 +689,12 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (this_uid, other_uid))
         result1 = cursor.fetchone()
+        cursor.close()
         sql = '''SELECT * FROM connections WHERE this_uid=%s AND other_uid=%s;'''
         cursor = db.cursor()
         cursor.execute(sql, (other_uid, this_uid))
         result2 = cursor.fetchone()
+        cursor.close()
         if result1 is None and result2 is None:
             return 0
         elif result1 is not None and result2 is not None:
@@ -672,6 +718,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (this_uid, other_uid))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def unset_connection(this_uid, other_uid):
@@ -679,6 +726,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (this_uid, other_uid))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def connected(uid_1, uid_2):
@@ -686,10 +734,12 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (uid_1, uid_2))
         first = cursor.fetchone()['cou']
+        cursor.close()
         sql = '''SELECT COUNT(*) AS cou FROM connections WHERE this_uid=%s AND other_uid=%s;'''
         cursor = db.cursor()
         cursor.execute(sql, (uid_2, uid_1))
         second = cursor.fetchone()['cou']
+        cursor.close()
         if first == 1 and second == 1:
             return True
         return False
@@ -700,6 +750,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (uid_1, uid_2))
         first = cursor.fetchone()['cou']
+        cursor.close()
         if first == 1:
             return True
         return False
@@ -715,6 +766,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, uid)
         my = cursor.fetchall()
+        cursor.close()
         my_connections = [m['other_uid'] for m in my]
 
         sql = '''SELECT this_uid from connections WHERE other_uid=%s;'''
@@ -727,6 +779,7 @@ class User:
         requested_connections = list(set(my_connections) - set(other_connections))
         unconfirmed_connections = list(set(other_connections) - set(my_connections))
 
+        cursor.close()
         return confirmed_connections, requested_connections, unconfirmed_connections
 
     @staticmethod
@@ -746,6 +799,7 @@ class User:
         cursor.execute(sql, (formater, uid))
         result = cursor.fetchone()
         current_timestamp = int(time.time())
+        cursor.close()
         if (current_timestamp - result['time_stamp']) <= 5:
             return 'Online'
         else:
@@ -786,6 +840,7 @@ class User:
                   WHERE id=%s;'''
         cursor.execute(sql, (sexuality, user_id))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def update_geolocation(user_id, lat, lon):
@@ -796,13 +851,16 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (user_id, lat, lon, user_id, lat, lon))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def get_geolocation(user_id):
         sql = "SELECT lat, lon FROM geolocation WHERE user_id=%s;"
         cursor = db.cursor()
         cursor.execute(sql, (user_id,))
-        return cursor.fetchone()
+        result = cursor.fetchone()
+        cursor.close()
+        return result
 
     @staticmethod
     def get_distance(uid_1, uid_2):
@@ -826,7 +884,9 @@ class User:
                  users.show_location=1 AND users.id!=%s;'''
         cursor = db.cursor()
         cursor.execute(sql, user_id)
-        return cursor.fetchall()
+        result = cursor.fetchall()
+        cursor.close()
+        return result
 
     @staticmethod
     def report_fake_account(user_id, fake_account_id):
@@ -834,6 +894,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (user_id, fake_account_id))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def block_user(user_id, blocked_user_id):
@@ -843,6 +904,7 @@ class User:
         cursor.execute(sql, (user_id, blocked_user_id, user_id, blocked_user_id))
         db.commit()
         User.unset_connection(user_id, blocked_user_id)
+        cursor.close()
 
     @staticmethod
     def unblock_user(user_id, blocked_user_id):
@@ -850,6 +912,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (user_id, blocked_user_id))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def is_blocked(blocked_user_id, user_id):
@@ -857,6 +920,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, (blocked_user_id, user_id))
         result = cursor.fetchone()['coun']
+        cursor.close()
         if result > 0:
             return True
         return False
@@ -867,6 +931,7 @@ class User:
         cursor = db.cursor()
         cursor.execute(sql, user_id)
         result = cursor.fetchall()
+        cursor.close()
         if result.__len__() == 0:
             return []
         return [id['blocked_user_id'] for id in result]

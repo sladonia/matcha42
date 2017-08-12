@@ -20,6 +20,8 @@ class Notifications:
         sql = "INSERT INTO notifications(msg, user_id, url, from_user, msg_type) VALUES(%s, %s, %s, %s, %s);"
         cursor = db.cursor()
         cursor.execute(sql, (msg, user_id, url, other_id, msg_type))
+        db.commit()
+        cursor.close()
     
     @staticmethod
     def get_n(user_id, n=20):
@@ -29,6 +31,7 @@ class Notifications:
         formater = '%d/%m/%Y %k:%i'
         cursor.execute(sql, (formater, user_id, n))
         l = cursor.fetchall()
+        cursor.close()
         return l
     
     @staticmethod
@@ -39,6 +42,7 @@ class Notifications:
         cursor = db.cursor()
         cursor.execute(sql, (formater, user_id))
         l = cursor.fetchall()
+        cursor.close()
         return l
     
     @staticmethod
@@ -49,13 +53,16 @@ class Notifications:
         cursor = db.cursor()
         cursor.execute(sql, user_id)
         db.commit()
+        cursor.close()
     
     @staticmethod
     def count_unread(user_id):
         sql = '''SELECT COUNT(*) as quantity FROM notifications WHERE user_id=%s AND seen=0;'''
         cursor = db.cursor()
         cursor.execute(sql, user_id)
-        return cursor.fetchone()['quantity']
+        result = cursor.fetchone()['quantity']
+        cursor.close()
+        return result
     
     @staticmethod
     def update_last_seen(user_id):
@@ -65,6 +72,7 @@ class Notifications:
         cursor = db.cursor()
         cursor.execute(sql, user_id)
         db.commit()
+        cursor.close()
         
     @staticmethod
     def viewed_profile_notification_allowed(user_id, watcher_id):
@@ -73,7 +81,9 @@ class Notifications:
                   msg_type="viewed_my_profile";'''
         cursor = db.cursor()
         cursor.execute(sql, (user_id, watcher_id))
-        if cursor.fetchone()['coun'] == 0:
+        result = cursor.fetchone()['coun']
+        cursor.close()
+        if result == 0:
             return True
         return False
         
@@ -85,6 +95,7 @@ class NotificationSteeings:
         cursor = db.cursor()
         cursor.execute(sql, uid)
         result = cursor.fetchone()
+        cursor.close()
         self.user_id = uid
         self.settings_list = dict()
         self.settings_list['likes_me'] = result['likes_me']

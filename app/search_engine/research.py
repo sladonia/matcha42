@@ -18,6 +18,7 @@ class Research:
             self.match_ids += [item['id'] for item in cursor.fetchall()]
         for id in self.match_ids:
             self.offers.append(User(id, user_id))
+        cursor.close()
     
     def get_gender_and_pref(self):
         gender_pref = list()

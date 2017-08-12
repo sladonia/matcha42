@@ -16,6 +16,7 @@ class VisitHistory:
         cursor = db.cursor()
         cursor.execute(sql, (user_id, other_user_id, other_user_login, url, msg))
         db.commit()
+        cursor.close()
         
     @staticmethod
     def get_visit_history(user_id, limit=30):
@@ -24,4 +25,6 @@ class VisitHistory:
         cursor = db.cursor()
         formater = "%b %D, %H:%i"
         cursor.execute(sql, (formater, user_id, limit))
-        return cursor.fetchall()
+        result = cursor.fetchall()
+        cursor.close()
+        return result

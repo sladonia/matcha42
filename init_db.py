@@ -165,4 +165,5 @@ def drop_db(config):
 
 if __name__ == '__main__':
     from config import production_config as config
+    #from config import developer_config as config
     init_db(config)

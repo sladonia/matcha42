@@ -13,13 +13,16 @@ class Geolocation:
         cursor = db.cursor()
         cursor.execute(sql, (user_id, lat, lon, user_id, lat, lon))
         db.commit()
+        cursor.close()
 
     @staticmethod
     def get_geolocation(user_id):
         sql = "SELECT lat, lon FROM geolocation WHERE user_id=%s;"
         cursor = db.cursor()
         cursor.execute(sql, (user_id,))
-        return cursor.fetchone()
+        result = cursor.fetchone()
+        cursor.close()
+        return result
         
     @staticmethod
     def get_distance(uid_1, uid_2):
