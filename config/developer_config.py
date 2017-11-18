@@ -10,7 +10,7 @@ SECRET_KEY = 'very the last secret'
 # Database configuration
 SQL_HOST = 'localhost'
 SQL_USER ='root'
-SQL_PASSWORD = '3121712'
+SQL_PASSWORD = '3121712S'
 SQL_DB = 'matcha'
 LOGFILE = 'log.txt'
 

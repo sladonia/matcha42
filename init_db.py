@@ -20,7 +20,7 @@ def init_db(config):
       );
       INSERT IGNORE INTO {0}.gender(type) VALUES('male');
       INSERT IGNORE INTO {0}.gender(type) VALUES('female');
-      
+
       CREATE TABLE IF NOT EXISTS {0}.preferences (
       id INT(4) NOT NULL AUTO_INCREMENT PRIMARY KEY,
       type VARCHAR(40) NOT NULL UNIQUE
@@ -28,7 +28,7 @@ def init_db(config):
       INSERT IGNORE INTO {0}.preferences(type) VALUES('bi-sexual');
       INSERT IGNORE INTO {0}.preferences(type) VALUES('straight');
       INSERT IGNORE INTO {0}.preferences(type) VALUES('homosexual');
-      
+
       CREATE TABLE IF NOT EXISTS {0}.users (
       id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
       token INT DEFAULT 0,
@@ -50,7 +50,7 @@ def init_db(config):
       FOREIGN KEY (gender) REFERENCES {0}.gender(id),
       FOREIGN KEY (preferences) REFERENCES {0}.preferences(id)
       );
-      
+
 
       CREATE TABLE IF NOT EXISTS {0}.interests (
       id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -58,7 +58,7 @@ def init_db(config):
       interest VARCHAR(128) NOT NULL,
       FOREIGN KEY (user_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE
       );
-      
+
       CREATE TABLE IF NOT EXISTS {0}.photos (
       id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
       user_id INT(11) NOT NULL,
@@ -67,7 +67,7 @@ def init_db(config):
       avatar INT(4) DEFAULT 0,
       FOREIGN KEY (user_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE
       );
-      
+
       CREATE TABLE IF NOT EXISTS {0}.notification_settings (
       id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
       user_id INT(11) NOT NULL,
@@ -78,7 +78,7 @@ def init_db(config):
       incoming_massage TINYINT(1) DEFAULT 1,
       FOREIGN KEY (user_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE
       );
-      
+
       CREATE TABLE IF NOT EXISTS {0}.visit_history (
       id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
       user_id INT(11) NOT NULL,
@@ -90,7 +90,7 @@ def init_db(config):
       FOREIGN KEY (user_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY (other_user_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE
       );
-      
+
       CREATE TABLE IF NOT EXISTS {0}.blocked_users (
       user_id INT(11) NOT NULL,
       blocked_user_id INT(11) NOT NULL,
@@ -98,7 +98,7 @@ def init_db(config):
       FOREIGN KEY (user_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY (blocked_user_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE
       );
-      
+
       CREATE TABLE IF NOT EXISTS {0}.fake_accounts (
       id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
       user_id INT(11) NOT NULL,
@@ -107,7 +107,7 @@ def init_db(config):
       FOREIGN KEY (user_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY (fake_account_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE
       );
-      
+
       CREATE TABLE IF NOT EXISTS {0}.chat (
       id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
       user_id INT(11) NOT NULL,
@@ -118,7 +118,7 @@ def init_db(config):
       FOREIGN KEY (user_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY (receiver_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE
       );
-      
+
       CREATE TABLE IF NOT EXISTS {0}.notifications (
       id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
       user_id INT(11) NOT NULL,
@@ -130,7 +130,7 @@ def init_db(config):
       seen TINYINT(1) DEFAULT 0,
       FOREIGN KEY (user_id) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE
       );
-      
+
       CREATE TABLE IF NOT EXISTS {0}.connections (
       this_uid INT(11) NOT NULL,
       other_uid INT(11) NOT NULL,
@@ -138,7 +138,7 @@ def init_db(config):
       FOREIGN KEY (this_uid) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY (other_uid) REFERENCES {0}.users(id) ON DELETE CASCADE ON UPDATE CASCADE
       );
-      
+
       CREATE TABLE IF NOT EXISTS {0}.geolocation (
       user_id INT(11) NOT NULL PRIMARY KEY,
       lat FLOAT(16, 10) NOT NULL,
@@ -164,6 +164,6 @@ def drop_db(config):
 
 
 if __name__ == '__main__':
-    from config import production_config as config
-    #from config import developer_config as config
+    # from config import production_config as config
+    from config import developer_config as config
     init_db(config)
