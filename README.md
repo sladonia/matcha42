@@ -2,8 +2,6 @@
 
 Matcha is a [42 school](https://en.wikipedia.org/wiki/42_(school)) student project accomplished in educational purpose. The project is written in python Flask framework with the limitations described bellow
 
-Project is available by the following [link](https://sladonia.pythonanywhere.com/)
-
 ### Project description
 
 This project is about creating a dating website.
