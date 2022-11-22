@@ -9,7 +9,7 @@ itsdangerous==0.24
 Jinja2==2.10
 MarkupSafe==1.0
 olefile==0.44
-Pillow==4.3.0
+Pillow==9.3.0
 pkg-resources==0.0.0
 PyMySQL==0.7.11
 python-resize-image==1.1.11
